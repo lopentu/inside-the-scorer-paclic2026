@@ -17,7 +17,7 @@ repository-code: "https://github.com/lopentu/inside-the-scorer-paclic2026"
 license: PolyForm-Noncommercial-1.0.0
 preferred-citation:
   type: conference-paper
-  title: "Inside the Scorer: Mechanistic Evidence on Rubric Control in LLM-Based Essay Scoring from 25 Base Models"
+  title: "Inside the Scorer: Mechanistic Evidence on Rubric Control in LLM-Based Automated Essay Scoring from 25 Base Models"
   authors:
     - family-names: Huang
       given-names: Chungche

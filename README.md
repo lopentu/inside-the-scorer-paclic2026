@@ -1,6 +1,6 @@
 # Inside the Scorer: code and data
 
-Code and data for **"Inside the Scorer: Mechanistic Evidence on Rubric Control in LLM-Based Essay Scoring from 25 Base Models"**
+Code and data for **"Inside the Scorer: Mechanistic Evidence on Rubric Control in LLM-Based Automated Essay Scoring from 25 Base Models"**
 by [Chungche Huang](https://chungche.com), Po-Ya Angela Wang, and Shu-Kai Hsieh (National Taiwan University),
 accepted at **[PACLIC 2026](https://paclic2026.github.io/)** (the 40th Pacific Asia Conference on Language, Information and Computation).
 
