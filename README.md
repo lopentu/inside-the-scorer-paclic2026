@@ -2,7 +2,7 @@
 
 Code and data for **"Inside the Scorer: Mechanistic Evidence on Rubric Control in LLM-Based Essay Scoring from 25 Base Models"**
 by [Chungche Huang](https://chungche.com), Po-Ya Angela Wang, and Shu-Kai Hsieh (National Taiwan University),
-accepted at **PACLIC 2026** (the 40th Pacific Asia Conference on Language, Information and Computation).
+accepted at **[PACLIC 2026](https://paclic2026.github.io/)** (the 40th Pacific Asia Conference on Language, Information and Computation).
 
 The paper probes and steers 25 open-weight base LLMs on human-scored English writing responses
 from [BESTEP](https://bestep.tw) (培力英語能力檢定測驗, Taiwan's Ministry-of-Education English test)
