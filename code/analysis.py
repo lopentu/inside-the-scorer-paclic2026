@@ -12,7 +12,6 @@ if TYPE_CHECKING:
 DEFAULT_RELIABILITY_THRESHOLD = 0.6
 DEFAULT_RESAMPLES = 50_000
 
-# The 25 open-weight base models analysed in the paper, in the order used throughout.
 PAPER_MODEL_IDS = [
     "meta-llama/Llama-3.1-8B",
     "google/gemma-2-9b",
@@ -43,7 +42,6 @@ PAPER_MODEL_IDS = [
 
 
 def paper_model_ids() -> list[str]:
-    """The paper's 25 models (a fresh list, safe to modify)."""
     return list(PAPER_MODEL_IDS)
 
 
