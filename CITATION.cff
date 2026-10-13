@@ -1,0 +1,31 @@
+cff-version: 1.2.0
+message: "If you use this code or data, please cite the paper below."
+title: "Inside the Scorer: code and data"
+type: software
+authors:
+  - family-names: Huang
+    given-names: Chungche
+    website: "https://chungche.com"
+    affiliation: "Graduate Institute of Linguistics, National Taiwan University"
+  - family-names: Wang
+    given-names: Po-Ya Angela
+    affiliation: "Co-intelligence Humanities AI (CHAI) Future Lab, National Taiwan University"
+  - family-names: Hsieh
+    given-names: Shu-Kai
+    affiliation: "Graduate Institute of Linguistics, National Taiwan University"
+repository-code: "https://github.com/lopentu/inside-the-scorer-paclic2026"
+license: PolyForm-Noncommercial-1.0.0
+preferred-citation:
+  type: conference-paper
+  title: "Inside the Scorer: Mechanistic Evidence on Rubric Control in LLM-Based Essay Scoring from 25 Base Models"
+  authors:
+    - family-names: Huang
+      given-names: Chungche
+      website: "https://chungche.com"
+    - family-names: Wang
+      given-names: Po-Ya Angela
+    - family-names: Hsieh
+      given-names: Shu-Kai
+  conference:
+    name: "The 40th Pacific Asia Conference on Language, Information and Computation (PACLIC 40)"
+  year: 2026

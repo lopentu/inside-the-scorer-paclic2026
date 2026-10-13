@@ -1,0 +1,4 @@
+# run_test.py unpacks the shipped .gz into this 273 MB file; never commit it
+data/bestep_25models.db
+__pycache__/
+*.pyc
