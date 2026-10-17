@@ -650,6 +650,79 @@ def phase3_per_pair_equivalence_rows(
     return out
 
 
+def phase3_within_part_matching_advantage_rows(
+    registry: "Registry", model_hf_ids: list[str],
+    run_scope: RunScope | None = None,
+    n_resamples: int = DEFAULT_RESAMPLES,
+    seed: int = 1729,
+) -> list[dict]:
+    """One row per unordered rubric pair inside one task part.
+
+    For rubrics a and b scored in the same part, `matching_advantage` is
+    the mean over models of ((delta(a on a-degraded essays) - delta(b on
+    a-degraded essays)) + (delta(b on b-degraded essays) - delta(a on
+    b-degraded essays))) / 2. Adding the two directions' gaps cancels each
+    rubric's general strength as a lever, which a one-directional self minus
+    other gap cannot, and leaves only the advantage of matching the essay's
+    degraded rubric. `relative_size` divides it by the mean absolute own
+    (self) effect of the two rubrics in that part."""
+    by_key: dict[tuple[str, int, str, str], list[float]] = {}
+    for model_hf_id in model_hf_ids:
+        where, params = _table_query_where(model_hf_id, "steer", run_scope)
+        rows = registry.query(
+            "SELECT s.part, s.direction, s.degradation, s.delta"
+            " FROM steering_metrics s JOIN experiment_runs r ON r.id = s.run_id"
+            " WHERE 1=1" + where, params)
+        for row in rows:
+            direction = row["direction"]
+            if direction == "band_probe" or direction.endswith("_orth"):
+                continue
+            by_key.setdefault(
+                (model_hf_id, row["part"], row["degradation"], direction), []).append(row["delta"])
+    mean_of = {key: st.mean(vals) for key, vals in by_key.items()}
+    rubrics_by_part: dict[int, set[str]] = {}
+    for (_, part, degradation, direction) in mean_of:
+        if direction == degradation:
+            rubrics_by_part.setdefault(part, set()).add(degradation)
+
+    out: list[dict] = []
+    for part in sorted(rubrics_by_part):
+        own_effect: dict[str, float] = {}
+        for rubric in rubrics_by_part[part]:
+            per_model = [mean_of[(m, part, rubric, rubric)] for m in model_hf_ids
+                         if (m, part, rubric, rubric) in mean_of]
+            own_effect[rubric] = st.mean(per_model)
+        rubrics = sorted(rubrics_by_part[part])
+        for i, a in enumerate(rubrics):
+            for b in rubrics[i + 1:]:
+                per_model_adv = []
+                for m in model_hf_ids:
+                    keys = [(m, part, a, a), (m, part, a, b), (m, part, b, b), (m, part, b, a)]
+                    if all(k in mean_of for k in keys):
+                        gap_a = mean_of[keys[0]] - mean_of[keys[1]]
+                        gap_b = mean_of[keys[2]] - mean_of[keys[3]]
+                        per_model_adv.append((gap_a + gap_b) / 2)
+                if len(per_model_adv) < 3:
+                    continue
+                ci_low, ci_high = _bootstrap_mean_ci(per_model_adv, n_resamples, seed)
+                mean_adv = st.mean(per_model_adv)
+                mean_own = (abs(own_effect[a]) + abs(own_effect[b])) / 2
+                out.append({
+                    "part": part,
+                    "criterion_a": a,
+                    "criterion_b": b,
+                    "n_models": len(per_model_adv),
+                    "matching_advantage_mean": mean_adv,
+                    "matching_advantage_ci_low": ci_low,
+                    "matching_advantage_ci_high": ci_high,
+                    "mean_own_effect": mean_own,
+                    "relative_size": mean_adv / mean_own if mean_own > 1e-12 else None,
+                    "advantage_detectable": ci_low is not None and ci_low > 0,
+                    "reversed_detectable": ci_high is not None and ci_high < 0,
+                })
+    return out
+
+
 def phase3_alpha_slope_rows(paired_rows: list[dict]) -> list[dict]:
     grouped: dict[str, dict[float, dict[str, list[float]]]] = {}
     for row in paired_rows:

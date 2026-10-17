@@ -23,7 +23,7 @@ python3 code/run_test.py
 ```
 
 The first run unpacks `data/bestep_25models.db.gz` (33 MB) into `data/bestep_25models.db` (273 MB),
-then recomputes the paper's numbers and prints a PASS/FAIL table. All 71 checks pass on the
+then recomputes the paper's numbers and prints a PASS/FAIL table. All 81 checks pass on the
 database as shipped.
 
 ## What `run_test.py` checks
@@ -42,6 +42,8 @@ Each check recomputes a value straight from the database and compares it with th
 | Limitations, agreement with human raters | each model's own expected band against the human band over the 75 essays: median Pearson r 0.41, 7 of 25 models at r >= 0.6, none at 0.8 |
 | RQ3, head-to-head comparisons | the 4 reliably measured rubrics have 10 testable ordered pairs (cohesion and spelling/punctuation are never degraded in the same part): none favors the matching direction, one favors the mismatched direction |
 | RQ3, robustness | largest gap when one model family is left out: 0.0083; among the 7 models whose own scores correlate with human scores at r >= 0.6, gap 0.0107 and specificity ratio 1.9% |
+| RQ3, within-part matching advantage | for the 18 pairs of rubrics scored in the same part, the matching advantage after cancelling each rubric's general strength ranges from -0.0154 to 0.0301 score points; it is detectable in 9 pairs and reversed in 1, and 6% of the pair's own effects at the median (2% to 14%) |
+| RQ3, alpha slopes | self 0.589, other 0.562, generic holistic direction 0.550, orthogonal control -0.288 score points per unit alpha |
 
 To explore beyond these checks, import `analysis.py` directly:
 

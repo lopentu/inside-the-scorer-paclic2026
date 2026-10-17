@@ -16,6 +16,7 @@ from analysis import (
     phase3_pairwise_specificity_all_models,
     phase3_pairwise_specificity_pooled_rows,
     phase3_per_pair_equivalence_rows,
+    phase3_within_part_matching_advantage_rows,
     phase3_self_other_paired_rows,
     phase3_specificity_ratio_by_model_rows,
     rq1_layer_part_rows,
@@ -105,7 +106,7 @@ def main() -> None:
         check(f"self_effect[{criterion}]", self_effects[criterion], exp_val, tol=0.01)
 
     print("=== RQ3: new Table 5 (orthogonal control / band_probe) ===")
-    orth_deltas, bp_deltas = [], []
+    orth_deltas, bp_deltas, orth_slopes, bp_slopes = [], [], [], []
     orth_slopes, bp_slopes = [], []
     for model_id in model_ids:
         by_alpha = phase3_category_summary(registry, model_id, run_scope)
@@ -120,15 +121,20 @@ def main() -> None:
                 bd.append(cats["band_probe"])
         if od:
             orth_deltas.append(st.mean(od))
+            orth_slopes.append(st.linear_regression(oa, od).slope)
         if bd:
             bp_deltas.append(st.mean(bd))
+            bp_slopes.append(st.linear_regression(ba, bd).slope)
     check("orthogonal_control delta", st.mean(orth_deltas), -0.0966, tol=0.001)
     check("band_probe delta", st.mean(bp_deltas), 0.1298, tol=0.001)
+    check("orthogonal_control alpha slope", st.mean(orth_slopes), -0.288, tol=0.005)
+    check("band_probe alpha slope", st.mean(bp_slopes), 0.550, tol=0.005)
 
     print("=== RQ3: alpha slopes (self ~0.589, alpha=0.5 self ~0.361) ===")
     alpha_rows = phase3_alpha_slope_rows(paired_rows)
     alpha_summary = phase3_alpha_summary(alpha_rows)
     check("self_alpha_slope_mean", alpha_summary["self_alpha_slope_mean"], 0.589, tol=0.005)
+    check("other_alpha_slope_mean", alpha_summary["other_alpha_slope_mean"], 0.562, tol=0.005)
 
     self_at_alpha_05 = []
     for model_id in model_ids:
@@ -215,6 +221,22 @@ def main() -> None:
     check("models with agreement r >= 0.6: model-level gap", subset["model_level_gap_mean"], 0.0107, tol=0.001)
     check("models with agreement r >= 0.6: specificity ratio",
           subset["model_level_specificity_ratio_mean"], 0.0194, tol=0.002)
+
+    print("=== RQ3: within-part matching advantage (18 rubric pairs) ===")
+    within = phase3_within_part_matching_advantage_rows(registry, model_ids, run_scope=run_scope)
+    check("within-part rubric pairs", len(within), 18, tol=0)
+    check("within-part pairs with a detectable matching advantage",
+          sum(r["advantage_detectable"] for r in within), 9, tol=0)
+    check("within-part pairs with a detectably reversed advantage",
+          sum(r["reversed_detectable"] for r in within), 1, tol=0)
+    check("within-part largest matching advantage",
+          max(r["matching_advantage_mean"] for r in within), 0.0301, tol=0.0005)
+    check("within-part smallest matching advantage",
+          min(r["matching_advantage_mean"] for r in within), -0.0154, tol=0.0005)
+    detectable_sizes = sorted(r["relative_size"] for r in within if r["advantage_detectable"])
+    check("within-part relative size, detectable pairs: median",
+          st.median(detectable_sizes), 0.056, tol=0.003)
+    check("within-part relative size, detectable pairs: max", max(detectable_sizes), 0.136, tol=0.003)
 
     registry.close()
 
