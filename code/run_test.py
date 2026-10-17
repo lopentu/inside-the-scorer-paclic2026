@@ -144,6 +144,13 @@ def main() -> None:
         check(f"RQ1 part {part} n models above null, raw", perm_summary[part]["n_sig_raw"], raw)
         check(f"RQ1 part {part} n models above null, layer-corrected",
               perm_summary[part]["n_sig_layer_bonferroni"], corrected)
+    perm_cells = rq1_peak_permutation_rows(rq1_layer_part_rows(registry, model_ids, run_scope))
+    for part, at_floor, median_corrected in ((1, 9, 0.096), (2, 21, 0.034), (3, 25, 0.032)):
+        part_cells = [r for r in perm_cells if r["part"] == part]
+        check(f"RQ1 part {part} n models at the permutation floor (p = 1/1001)",
+              sum(abs(r["perm_pvalue_raw"] - 1 / 1001) < 1e-9 for r in part_cells), at_floor, tol=0)
+        check(f"RQ1 part {part} median layer-corrected p",
+              st.median(r["perm_pvalue_layer_bonferroni"] for r in part_cells), median_corrected, tol=0.0006)
 
     print("=== RQ3: pairwise self-unique vs other-unique check (884 cells, all 25 models) ===")
     # run_scope is deliberately not passed: the pairwise rows sit on later steer runs.
