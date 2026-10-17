@@ -23,7 +23,7 @@ python3 code/run_test.py
 ```
 
 The first run unpacks `data/bestep_25models.db.gz` (33 MB) into `data/bestep_25models.db` (273 MB),
-then recomputes the paper's numbers and prints a PASS/FAIL table. All 51 checks pass on the
+then recomputes the paper's numbers and prints a PASS/FAIL table. All 55 checks pass on the
 database as shipped.
 
 ## What `run_test.py` checks
@@ -39,6 +39,7 @@ Each check recomputes a value straight from the database and compares it with th
 | RQ3, controls | orthogonal control (-0.097) and generic holistic direction (0.130) |
 | RQ3, pairwise check | 884 pair cells: matching and mismatched residual directions clear the noise floor by 0.194 and 0.181, and their gap is 0.013 (95% CI -0.015 to 0.042) |
 | RQ3, dose response | alpha slope 0.589 and the alpha = 0.5 effect of 0.361 score points |
+| Limitations, agreement with human raters | each model's own expected band against the human band over the 75 essays: median Pearson r 0.41, 7 of 25 models at r >= 0.6, none at 0.8 |
 
 To explore beyond these checks, import `analysis.py` directly:
 

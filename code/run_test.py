@@ -159,6 +159,19 @@ def main() -> None:
     check("pairwise gap CI high", all_pairs["self_other_unique_gap_ci_high"], 0.0417, tol=0.003)
     check("pairwise specificity ratio", all_pairs["specificity_ratio"], 0.0452, tol=0.002)
 
+    by_model: dict[str, tuple[list[float], list[float]]] = {}
+    for row in registry.query(
+            "SELECT r.model_hf_id AS model, s.human_band AS human, s.predicted_band AS machine"
+            " FROM model_scores s JOIN experiment_runs r ON r.id = s.run_id"):
+        humans, machines = by_model.setdefault(row["model"], ([], []))
+        humans.append(row["human"])
+        machines.append(row["machine"])
+    agreement = [st.correlation(h, m) for h, m in by_model.values()]
+    check("agreement n models", len(agreement), 25, tol=0)
+    check("agreement median Pearson r", st.median(agreement), 0.41, tol=0.005)
+    check("agreement n models r >= 0.6", sum(r >= 0.6 for r in agreement), 7, tol=0)
+    check("agreement n models r >= 0.8", sum(r >= 0.8 for r in agreement), 0, tol=0)
+
     registry.close()
 
     print()
