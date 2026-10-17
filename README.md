@@ -23,7 +23,7 @@ python3 code/run_test.py
 ```
 
 The first run unpacks `data/bestep_25models.db.gz` (33 MB) into `data/bestep_25models.db` (273 MB),
-then recomputes the paper's numbers and prints a PASS/FAIL table. All 68 checks pass on the
+then recomputes the paper's numbers and prints a PASS/FAIL table. All 71 checks pass on the
 database as shipped.
 
 ## What `run_test.py` checks
@@ -32,7 +32,7 @@ Each check recomputes a value straight from the database and compares it with th
 
 | Paper result | What is recomputed |
 |---|---|
-| RQ1, peak-layer decodability against a permutation null | how many models' peak layer beats a label-shuffle null, raw and Bonferroni-corrected over layers (Part 1: 24 and 9 of 25; Part 2: 25 and 22; Part 3: 25 and 25), how many sit at the permutation floor p = 1/1001 (9, 21 and 25), and the median corrected p (0.096, 0.034, 0.032) |
+| RQ1, peak-layer decodability against a permutation null | how many models' peak layer beats a label-shuffle null, raw and Bonferroni-corrected over layers (Part 1: 24 and 9 of 25; Part 2: 25 and 22; Part 3: 25 and 25), how many sit at the permutation floor p = 1/1001 (9, 21 and 25), the median corrected p (0.096, 0.034, 0.032), and that Part 1 peaks latest or second-latest in 23 of 25 models (8 of the 9 whose Part 1 peak passes the corrected test) |
 | RQ2, Table 4 | disattenuated criterion-pair similarity for all 12 comparable pairs, with cell counts |
 | RQ3, headline | self versus other steering over 74,304 paired cells: cell-level gap 0.0085, model-level gap 0.0074 |
 | RQ3, per-criterion effects | each criterion's own steering effect, 0.168 to 0.359 score points |

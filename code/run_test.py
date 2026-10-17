@@ -151,6 +151,18 @@ def main() -> None:
               sum(abs(r["perm_pvalue_raw"] - 1 / 1001) < 1e-9 for r in part_cells), at_floor, tol=0)
         check(f"RQ1 part {part} median layer-corrected p",
               st.median(r["perm_pvalue_layer_bonferroni"] for r in part_cells), median_corrected, tol=0.0006)
+    cell = {(r["model_hf_id"], r["part"]): r for r in perm_cells}
+
+    def part1_peaks_late(model: str) -> bool:
+        position = {p: cell[(model, p)]["peak_layer"] / (cell[(model, p)]["n_layers"] - 1) for p in (1, 2, 3)}
+        return sorted(position, key=lambda p: -position[p]).index(1) <= 1
+
+    check("RQ1 Part 1 peaks latest or second-latest, all models",
+          sum(part1_peaks_late(m) for m in model_ids), 23, tol=0)
+    part1_passing = [m for m in model_ids if cell[(m, 1)]["sig_layer_bonferroni"]]
+    check("RQ1 Part 1 passes corrected test: n models", len(part1_passing), 9, tol=0)
+    check("RQ1 Part 1 peaks latest or second-latest, among those",
+          sum(part1_peaks_late(m) for m in part1_passing), 8, tol=0)
 
     print("=== RQ3: pairwise self-unique vs other-unique check (884 cells, all 25 models) ===")
     # run_scope is deliberately not passed: the pairwise rows sit on later steer runs.
