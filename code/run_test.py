@@ -92,6 +92,11 @@ def main() -> None:
     check("n_paired_cells", equivalence["n_paired_cells"], 74304, tol=0)
     check("cell_level_gap_mean", equivalence["cell_level_gap_mean"], 0.0085, tol=0.001)
     check("model_level_gap_mean", equivalence["model_level_gap_mean"], 0.0074, tol=0.001)
+    check("equivalence margin (score points)", equivalence["margin_score_points"], 0.05, tol=0)
+    check("equivalence margin (share of the self effect)", equivalence["ratio_margin"], 0.10, tol=0)
+    check("model-level gap CI lies inside the margin", equivalence["model_level_equivalent_within_margin"], 1, tol=0)
+    check("cell-level gap CI lies inside the margin", equivalence["cell_level_equivalent_within_margin"], 1, tol=0)
+    check("model-level ratio CI lies inside the margin", equivalence["model_level_ratio_equivalent_within_margin"], 1, tol=0)
 
     print("=== RQ3: per-criterion self effects (0.168 to 0.359) ===")
     pair_rows = phase3_per_pair_equivalence_rows(registry, model_ids, run_scope=run_scope)

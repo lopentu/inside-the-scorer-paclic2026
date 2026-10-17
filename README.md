@@ -23,7 +23,7 @@ python3 code/run_test.py
 ```
 
 The first run unpacks `data/bestep_25models.db.gz` (33 MB) into `data/bestep_25models.db` (273 MB),
-then recomputes the paper's numbers and prints a PASS/FAIL table. All 83 checks pass on the
+then recomputes the paper's numbers and prints a PASS/FAIL table. All 88 checks pass on the
 database as shipped.
 
 ## What `run_test.py` checks
@@ -34,7 +34,7 @@ Each check recomputes a value straight from the database and compares it with th
 |---|---|
 | RQ1, peak-layer decodability against a permutation null | how many models' peak layer beats a label-shuffle null, raw and Bonferroni-corrected over layers (Part 1: 24 and 9 of 25; Part 2: 25 and 22; Part 3: 25 and 25), how many sit at the permutation floor p = 1/1001 (9, 21 and 25), the median corrected p (0.096, 0.034, 0.032), and that Part 1 peaks latest or second-latest in 23 of 25 models (8 of the 9 whose Part 1 peak passes the corrected test) |
 | RQ2, Table 4 | disattenuated criterion-pair similarity for all 12 comparable pairs, with cell counts |
-| RQ3, headline | self versus other steering over 74,304 paired cells: cell-level gap 0.0085, model-level gap 0.0074 |
+| RQ3, headline | self versus other steering over 74,304 paired cells: cell-level gap 0.0085, model-level gap 0.0074; the confidence intervals of the gap and of its ratio to the self effect lie inside the equivalence margin (0.05 score points, 10% of the self effect) |
 | RQ3, per-criterion effects | each criterion's own steering effect, 0.168 to 0.359 score points |
 | RQ3, controls | orthogonal control (-0.097) and generic holistic direction (0.130) |
 | RQ3, pairwise check | 884 pair cells: matching and mismatched residual directions clear the noise floor by 0.194 and 0.181, and their gap is 0.013 (95% CI -0.015 to 0.042) |
