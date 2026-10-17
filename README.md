@@ -23,7 +23,7 @@ python3 code/run_test.py
 ```
 
 The first run unpacks `data/bestep_25models.db.gz` (33 MB) into `data/bestep_25models.db` (273 MB),
-then recomputes the paper's numbers and prints a PASS/FAIL table. All 81 checks pass on the
+then recomputes the paper's numbers and prints a PASS/FAIL table. All 83 checks pass on the
 database as shipped.
 
 ## What `run_test.py` checks

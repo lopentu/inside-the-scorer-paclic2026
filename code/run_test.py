@@ -221,6 +221,8 @@ def main() -> None:
     check("models with agreement r >= 0.6: model-level gap", subset["model_level_gap_mean"], 0.0107, tol=0.001)
     check("models with agreement r >= 0.6: specificity ratio",
           subset["model_level_specificity_ratio_mean"], 0.0194, tol=0.002)
+    check("models with agreement r >= 0.6: gap CI low", subset["model_level_gap_ci_low"], 0.0068, tol=0.0006)
+    check("models with agreement r >= 0.6: gap CI high", subset["model_level_gap_ci_high"], 0.0151, tol=0.0006)
 
     print("=== RQ3: within-part matching advantage (18 rubric pairs) ===")
     within = phase3_within_part_matching_advantage_rows(registry, model_ids, run_scope=run_scope)
