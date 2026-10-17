@@ -172,6 +172,31 @@ def main() -> None:
     check("agreement n models r >= 0.6", sum(r >= 0.6 for r in agreement), 7, tol=0)
     check("agreement n models r >= 0.8", sum(r >= 0.8 for r in agreement), 0, tol=0)
 
+    four = {"grammar", "vocabulary", "cohesion", "spelling_punctuation"}
+    head_to_head = phase3_per_pair_equivalence_rows(registry, model_ids, run_scope=run_scope)
+    testable = [r for r in head_to_head
+                if r["self_criterion"] in four and r["other_criterion"] in four]
+    check("head-to-head: testable ordered pairs among the 4 rubrics", len(testable), 10, tol=0)
+    check("head-to-head: pairs where matching direction is detectably better",
+          sum(r["model_level_gap_ci_low"] > 0 for r in testable), 0, tol=0)
+    check("head-to-head: pairs where mismatched direction is detectably better",
+          sum(r["model_level_gap_ci_high"] < 0 for r in testable), 1, tol=0)
+
+    family = {r["hf_id"]: r["family"] for r in registry.query("SELECT hf_id, family FROM models")}
+    model_gap = {r["model_hf_id"]: r["self_other_gap_mean"] for r in model_summary}
+    leave_family_out = [st.mean(g for m, g in model_gap.items() if family[m] != f)
+                        for f in set(family[m] for m in model_gap)]
+    check("leave-one-family-out max gap", max(leave_family_out), 0.0083, tol=0.0002)
+
+    agreeing = {m for m, (h, mc) in by_model.items() if st.correlation(h, mc) >= 0.6}
+    subset_rows = [r for r in paired_rows if r["model_hf_id"] in agreeing]
+    subset_summary = phase3_specificity_ratio_by_model_rows(subset_rows)
+    subset = phase3_equivalence_summary(subset_rows, subset_summary)
+    check("models with agreement r >= 0.6: n", subset["n_models"], 7, tol=0)
+    check("models with agreement r >= 0.6: model-level gap", subset["model_level_gap_mean"], 0.0107, tol=0.001)
+    check("models with agreement r >= 0.6: specificity ratio",
+          subset["model_level_specificity_ratio_mean"], 0.0194, tol=0.002)
+
     registry.close()
 
     print()
