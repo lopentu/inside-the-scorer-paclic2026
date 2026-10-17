@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
-from context import LANGUAGE_FUNCTIONS, TASK_TEXT
+from context import LANGUAGE_CONSTRUCT, TASK_TEXT
 
 
 @dataclass(frozen=True)
@@ -160,5 +160,5 @@ def specs_for_part(part: int) -> tuple[MutationSpec, ...]:
 def task_context(form: int, part: int) -> str:
     return (
         f"{TASK_TEXT[(form, part)]}\n"
-        f"(語言功能 tested: {LANGUAGE_FUNCTIONS[part]})"
+        f"(語言功能 tested: {LANGUAGE_CONSTRUCT[part]})"
     )
